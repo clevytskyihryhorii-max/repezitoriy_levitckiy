@@ -1,0 +1,424 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Diagnostics;
+
+namespace ArraysAndCollectionsLab
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            
+            // Частина 1: Робота з масивами
+            Console.WriteLine("=== ЧАСТИНА 1: РОБОТА З МАСИВАМИ ===\n");
+            
+            // 1.1 Створення та ініціалізація масивів
+            int[] simpleArray = { 5, 2, 8, 1, 9, 3, 7, 4, 6, 0 };
+            int[,] twoDimensionalArray = {
+                { 1, 2, 3 },
+                { 4, 5, 6 },
+                { 7, 8, 9 }
+            };
+            
+            // Зубчастий масив
+            int[][] jaggedArray = new int[3][];
+            jaggedArray[0] = new int[] { 1, 2, 3 };
+            jaggedArray[1] = new int[] { 4, 5 };
+            jaggedArray[2] = new int[] { 6, 7, 8, 9 };
+            
+            Console.WriteLine("1.1 Створені масиви:");
+            PrintArray(simpleArray, "Одновимірний масив");
+            Print2DArray(twoDimensionalArray, "Двовимірний масив");
+            PrintJaggedArray(jaggedArray, "Зубчастий масив");
+            
+            // 1.2 Операції з масивами
+            Console.WriteLine("\n1.2 Операції з масивами:");
+            
+            // Сортування
+            int[] sortedArray = (int[])simpleArray.Clone();
+            Array.Sort(sortedArray);
+            PrintArray(sortedArray, "Відсортований масив");
+            
+            // Пошук
+            int searchValue = 7;
+            int index = Array.IndexOf(simpleArray, searchValue);
+            Console.WriteLine($"Пошук значення {searchValue}: індекс = {index}");
+            
+            // Копіювання
+            int[] copiedArray = new int[5];
+            Array.Copy(simpleArray, 2, copiedArray, 0, 5);
+            PrintArray(copiedArray, "Скопійований фрагмент масиву");
+            
+            // 1.3 Багатовимірні масиви
+            Console.WriteLine("\n1.3 Операції з двовимірним масивом:");
+            Console.WriteLine($"Кількість вимірів: {twoDimensionalArray.Rank}");
+            Console.WriteLine($"Розміри: {twoDimensionalArray.GetLength(0)}x{twoDimensionalArray.GetLength(1)}");
+            
+            // Сума всіх елементів
+            int sum2D = 0;
+            for (int i = 0; i < twoDimensionalArray.GetLength(0); i++)
+            {
+                for (int j = 0; j < twoDimensionalArray.GetLength(1); j++)
+                {
+                    sum2D += twoDimensionalArray[i, j];
+                }
+            }
+            Console.WriteLine($"Сума всіх елементів: {sum2D}");
+            
+            // Частина 2: Робота з колекціями
+            Console.WriteLine("\n\n=== ЧАСТИНА 2: РОБОТА З КОЛЕКЦІЯМИ ===\n");
+            
+            // 2.1 List<T> - динамічний масив
+            Console.WriteLine("2.1 List<T> - динамічний масив");
+            List<string> students = new List<string> 
+            { 
+                "Анна", "Богдан", "Вікторія", "Дмитро", "Олена" 
+            };
+            
+            PrintList(students, "Початковий список студентів");
+            
+            // Додавання елементів
+            students.Add("Іван");
+            students.Insert(2, "Катерина");
+            PrintList(students, "Після додавання елементів");
+            
+            // Видалення елементів
+            students.Remove("Дмитро");
+            students.RemoveAt(0);
+            PrintList(students, "Після видалення елементів");
+            
+            // Пошук
+            bool containsAnna = students.Contains("Анна");
+            int indexOfVika = students.IndexOf("Вікторія");
+            Console.WriteLine($"Містить 'Анна': {containsAnna}");
+            Console.WriteLine($"Індекс 'Вікторія': {indexOfVika}");
+            
+            // Сортування
+            students.Sort();
+            PrintList(students, "Відсортований список");
+            
+            // 2.2 Dictionary<TKey, TValue> - словник
+            Console.WriteLine("\n2.2 Dictionary<TKey, TValue> - словник");
+            Dictionary<string, double> studentGrades = new Dictionary<string, double>
+            {
+                ["Анна"] = 95.5,
+                ["Богдан"] = 87.0,
+                ["Вікторія"] = 92.3,
+                ["Дмитро"] = 78.9
+            };
+            
+            PrintDictionary(studentGrades, "Оцінки студентів");
+            
+            // Додавання нового запису
+            studentGrades["Олена"] = 88.8;
+            
+            // Пошук у словнику
+            if (studentGrades.ContainsKey("Анна"))
+            {
+                Console.WriteLine($"Оцінка Анни: {studentGrades["Анна"]}");
+            }
+            
+            // Ітерація по словнику
+            Console.WriteLine("\nІтерація по словнику:");
+            foreach (var kvp in studentGrades)
+            {
+                Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+            }
+            
+            // 2.3 HashSet<T> - множина
+            Console.WriteLine("\n2.3 HashSet<T> - множина унікальних елементів");
+            HashSet<int> set1 = new HashSet<int> { 1, 2, 3, 4, 5 };
+            HashSet<int> set2 = new HashSet<int> { 4, 5, 6, 7, 8 };
+            
+            Console.Write("Множина 1: ");
+            PrintCollection(set1);
+            Console.Write("Множина 2: ");
+            PrintCollection(set2);
+            
+            // Операції з множинами
+            HashSet<int> unionSet = new HashSet<int>(set1);
+            unionSet.UnionWith(set2);
+            Console.Write("Об'єднання: ");
+            PrintCollection(unionSet);
+            
+            HashSet<int> intersectSet = new HashSet<int>(set1);
+            intersectSet.IntersectWith(set2);
+            Console.Write("Перетин: ");
+            PrintCollection(intersectSet);
+            
+            HashSet<int> exceptSet = new HashSet<int>(set1);
+            exceptSet.ExceptWith(set2);
+            Console.Write("Різниця (1 \\ 2): ");
+            PrintCollection(exceptSet);
+            
+            // 2.4 Queue<T> та Stack<T>
+            Console.WriteLine("\n2.4 Queue<T> (черга) та Stack<T> (стек)");
+            
+            // Черга (FIFO)
+            Queue<string> ticketQueue = new Queue<string>();
+            ticketQueue.Enqueue("Клієнт 1");
+            ticketQueue.Enqueue("Клієнт 2");
+            ticketQueue.Enqueue("Клієнт 3");
+            
+            Console.WriteLine("Черга клієнтів:");
+            while (ticketQueue.Count > 0)
+            {
+                string client = ticketQueue.Dequeue();
+                Console.WriteLine($"Обслуговується: {client}");
+            }
+            
+            // Стек (LIFO)
+            Stack<string> browserHistory = new Stack<string>();
+            browserHistory.Push("google.com");
+            browserHistory.Push("github.com");
+            browserHistory.Push("stackoverflow.com");
+            
+            Console.WriteLine("\nІсторія браузера (назад):");
+            while (browserHistory.Count > 0)
+            {
+                string page = browserHistory.Pop();
+                Console.WriteLine($"Перехід на: {page}");
+            }
+            
+            // 2.5 LinkedList<T> - двозв'язний список
+            Console.WriteLine("\n2.5 LinkedList<T> - двозв'язний список");
+            LinkedList<int> linkedList = new LinkedList<int>();
+            
+            // Додавання елементів
+            linkedList.AddLast(10);
+            linkedList.AddLast(20);
+            linkedList.AddFirst(5);
+            linkedList.AddAfter(linkedList.First, 7);
+            
+            Console.Write("Двозв'язний список: ");
+            foreach (var item in linkedList)
+            {
+                Console.Write($"{item} ");
+            }
+            Console.WriteLine();
+            
+            // Частина 3: Порівняння продуктивності
+            Console.WriteLine("\n\n=== ЧАСТИНА 3: ПОРІВНЯННЯ ПРОДУКТИВНОСТІ ===");
+            CompareCollectionsPerformance();
+            
+            // Частина 4: Практичне завдання
+            Console.WriteLine("\n\n=== ЧАСТИНА 4: ПРАКТИЧНЕ ЗАВДАННЯ ===");
+            PracticalTask();
+            
+            Console.WriteLine("\nРоботу завершено!");
+        }
+        
+        // Методи для виводу масивів
+        static void PrintArray(int[] array, string title)
+        {
+            Console.WriteLine($"{title}: [{string.Join(", ", array)}]");
+        }
+        
+        static void Print2DArray(int[,] array, string title)
+        {
+            Console.WriteLine($"{title}:");
+            for (int i = 0; i < array.GetLength(0); i++)
+            {
+                Console.Write("  ");
+                for (int j = 0; j < array.GetLength(1); j++)
+                {
+                    Console.Write($"{array[i, j]} ");
+                }
+                Console.WriteLine();
+            }
+        }
+        
+        static void PrintJaggedArray(int[][] array, string title)
+        {
+            Console.WriteLine($"{title}:");
+            for (int i = 0; i < array.Length; i++)
+            {
+                Console.Write("  Рядок {0}: [", i);
+                if (array[i] != null)
+                {
+                    Console.Write(string.Join(", ", array[i]));
+                }
+                Console.WriteLine("]");
+            }
+        }
+        
+        // Методи для виводу колекцій
+        static void PrintList<T>(List<T> list, string title)
+        {
+            Console.WriteLine($"{title}: [{string.Join(", ", list)}] (кількість: {list.Count})");
+        }
+        
+        static void PrintDictionary<TKey, TValue>(Dictionary<TKey, TValue> dict, string title)
+        {
+            Console.WriteLine(title + ":");
+            foreach (var kvp in dict)
+            {
+                Console.WriteLine($"  {kvp.Key}: {kvp.Value}");
+            }
+        }
+        
+        static void PrintCollection<T>(IEnumerable<T> collection)
+        {
+            Console.WriteLine($"[{string.Join(", ", collection)}]");
+        }
+        
+        // Порівняння продуктивності різних колекцій
+        static void CompareCollectionsPerformance()
+        {
+            const int ITERATIONS = 100000;
+            
+            Console.WriteLine($"\nТестування на {ITERATIONS:N0} елементах:");
+            
+            // Тестування List<T>
+            Stopwatch sw = Stopwatch.StartNew();
+            List<int> list = new List<int>();
+            for (int i = 0; i < ITERATIONS; i++)
+            {
+                list.Add(i);
+            }
+            sw.Stop();
+            Console.WriteLine($"List<T>.Add(): {sw.ElapsedMilliseconds} ms");
+            
+            // Тестування HashSet<T>
+            sw.Restart();
+            HashSet<int> hashSet = new HashSet<int>();
+            for (int i = 0; i < ITERATIONS; i++)
+            {
+                hashSet.Add(i);
+            }
+            sw.Stop();
+            Console.WriteLine($"HashSet<T>.Add(): {sw.ElapsedMilliseconds} ms");
+            
+            // Тестування Dictionary<TKey, TValue>
+            sw.Restart();
+            Dictionary<int, int> dict = new Dictionary<int, int>();
+            for (int i = 0; i < ITERATIONS; i++)
+            {
+                dict[i] = i;
+            }
+            sw.Stop();
+            Console.WriteLine($"Dictionary<TKey,TValue>.Add(): {sw.ElapsedMilliseconds} ms");
+            
+            // Пошук у колекціях
+            Console.WriteLine("\nТестування пошуку:");
+            
+            // Пошук у List
+            sw.Restart();
+            bool foundInList = list.Contains(ITERATIONS / 2);
+            sw.Stop();
+            Console.WriteLine($"List<T>.Contains(): {sw.ElapsedMilliseconds} ms");
+            
+            // Пошук у HashSet
+            sw.Restart();
+            bool foundInHashSet = hashSet.Contains(ITERATIONS / 2);
+            sw.Stop();
+            Console.WriteLine($"HashSet<T>.Contains(): {sw.ElapsedMilliseconds} ms");
+            
+            // Пошук у Dictionary
+            sw.Restart();
+            bool foundInDict = dict.ContainsKey(ITERATIONS / 2);
+            sw.Stop();
+            Console.WriteLine($"Dictionary.ContainsKey(): {sw.ElapsedMilliseconds} ms");
+        }
+        
+        // Практичне завдання
+        static void PracticalTask()
+        {
+            Console.WriteLine("\nЗавдання: Система управління бібліотекою");
+            
+            // 1. Створення колекції книг
+            List<Book> library = new List<Book>
+            {
+                new Book("451° за Фаренгейтом", "Рей Бредбері", 1953, "Фантастика"),
+                new Book("1984", "Джордж Орвелл", 1949, "Антиутопія"),
+                new Book("Майстер і Маргарита", "Михайло Булгаков", 1967, "Роман"),
+                new Book("Гаррі Поттер і філософський камінь", "Джоан Роулінг", 1997, "Фентезі"),
+                new Book("Володар перснів", "Дж. Р. Р. Толкін", 1954, "Фентезі")
+            };
+            
+            // 2. Виведення всіх книг
+            Console.WriteLine("\nВсі книги в бібліотеці:");
+            foreach (var book in library)
+            {
+                Console.WriteLine(book);
+            }
+            
+            // 3. Пошук книг за жанром
+            string searchGenre = "Фентезі";
+            var fantasyBooks = library.Where(b => b.Genre == searchGenre).ToList();
+            
+            Console.WriteLine($"\nКниги жанру '{searchGenre}':");
+            foreach (var book in fantasyBooks)
+            {
+                Console.WriteLine($"  - {book.Title} ({book.Author})");
+            }
+            
+            // 4. Групування книг за автором
+            Console.WriteLine("\nКниги, згруповані за автором:");
+            var groupedByAuthor = library.GroupBy(b => b.Author);
+            
+            foreach (var group in groupedByAuthor)
+            {
+                Console.WriteLine($"\n{group.Key}:");
+                foreach (var book in group)
+                {
+                    Console.WriteLine($"  {book.Title} ({book.Year})");
+                }
+            }
+            
+            // 5. Сортування книг за роком видання
+            Console.WriteLine("\nКниги, відсортовані за роком видання:");
+            var sortedByYear = library.OrderBy(b => b.Year).ToList();
+            
+            foreach (var book in sortedByYear)
+            {
+                Console.WriteLine($"  {book.Year}: {book.Title}");
+            }
+            
+            // 6. Використання Dictionary для швидкого пошуку
+            Dictionary<string, Book> bookDictionary = library.ToDictionary(b => b.Title);
+            
+            Console.WriteLine("\nШвидкий пошук за назвою:");
+            string searchTitle = "1984";
+            if (bookDictionary.TryGetValue(searchTitle, out Book foundBook))
+            {
+                Console.WriteLine($"Знайдено: {foundBook}");
+            }
+            else
+            {
+                Console.WriteLine($"Книга '{searchTitle}' не знайдена");
+            }
+            
+            // 7. Статистика
+            Console.WriteLine("\nСтатистика бібліотеки:");
+            Console.WriteLine($"Загальна кількість книг: {library.Count}");
+            Console.WriteLine($"Найстаріша книга: {library.Min(b => b.Year)} р.");
+            Console.WriteLine($"Найновіша книга: {library.Max(b => b.Year)} р.");
+            Console.WriteLine($"Середній рік видання: {library.Average(b => b.Year):F0} р.");
+        }
+    }
+    
+    // Допоміжний клас для практичного завдання
+    class Book
+    {
+        public string Title { get; set; }
+        public string Author { get; set; }
+        public int Year { get; set; }
+        public string Genre { get; set; }
+        
+        public Book(string title, string author, int year, string genre)
+        {
+            Title = title;
+            Author = author;
+            Year = year;
+            Genre = genre;
+        }
+        
+        public override string ToString()
+        {
+            return $"{Title} ({Author}, {Year}, {Genre})";
+        }
+    }
+}
